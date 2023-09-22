@@ -1,0 +1,9 @@
+List tugas
+1) Menambahkan tabel categories (della)
+2) Menambahkan Foreign key categoryid pada tabel books (della)
+3) Membuat halaman web untuk CRUD data buku
+4) membuat halaman untuk pencarian atau filter data buku (tata)
+5) Memberi link pada tiap buku pada hasil pencarian untuk menuju halaman detail data buku (tata)
+6) Menampilkan data order beserta detail item
+7) Menampilkan rekap data dalam bentuk grafik
+8) Menampilkan tabel data buku yang di span
