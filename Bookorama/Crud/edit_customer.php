@@ -1,14 +1,37 @@
 <?php
 
 // TODO 1: Lakukan koneksi dengan database
+require_once('./lib/db_login.php');
 
 // TODO 2: Buat variabel $id yang diambil dari query string parameter
+$id = isset($_GET['id']) ? $_GET['id'] : '';
+$name = ''; // Inisialisasi variabel $name
+$address = ''; // Inisialisasi variabel $address
 
 // Memeriksa apakah user belum menekan tombol submit
 if (!isset($_POST["submit"])) {
     // TODO 3: Tulislah dan eksekusi query untuk mengambil informasi customer berdasarkan id
-    
+    if (!empty($id)) {
+        $query = "SELECT * FROM customers WHERE id = '$id'";
+        $result = $db->query($query);
 
+        // Check for query execution error
+        if (!$result) {
+            die("Query execution failed: " . $db->error);
+        }
+
+        // Fetch customer data
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $name = $row['name'];
+            $address = $row['address'];
+            $city = $row['city'];
+        } else {
+            echo "Customer with ID $id not found. Please check the ID and try again.";
+        }
+
+        $result->free();
+    }
 } else {
     $valid = TRUE;
     $name = test_input($_POST['name']);
@@ -39,7 +62,14 @@ if (!isset($_POST["submit"])) {
     // Update data into database
     if ($valid) {
         // TODO 4: Jika valid, update data pada database dengan mengeksekusi query yang sesuai
-        
+        $update_query = "UPDATE customers SET name='$name', address='$address', city='$city' WHERE id='$id'";
+        $update_result = $db->query($update_query);
+
+        if (!$update_result) {
+            die("Query execution failed: " . $db->error);
+        } else {
+            // Redirect to view_customer.php or display a success message
+        }
     }
 }
 ?>
@@ -62,7 +92,7 @@ if (!isset($_POST["submit"])) {
             <div class="form-group">
                 <label for="city">City:</label>
                 <select name="city" id="city" class="form-control" required>
-                    <option value="none" <?php if (!isset($city)) echo 'selected' ?>>--Select a city--</option>
+                    <option value="none" <?php if (!isset($city) || $city == 'none') echo 'selected' ?>>--Select a city--</option>
                     <option value="Airport West" <?php if (isset($city) && $city == "Airport West") echo 'selected' ?>>Airport West</option>
                     <option value="Box Hill" <?php if (isset($city) && $city == "Box Hill") echo 'selected' ?>>Box Hill</option>
                     <option value="Yarraville" <?php if (isset($city) && $city == "Yarraville") echo 'selected' ?>>Yarraville</option>
@@ -77,5 +107,5 @@ if (!isset($_POST["submit"])) {
 </div>
 <?php include('./footer.php') ?>
 <?php
-$db->close();
+$db->close(); // Close the database connection
 ?>
